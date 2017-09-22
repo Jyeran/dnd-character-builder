@@ -1,5 +1,6 @@
 import math
 import csv
+import os
 
 class Race:
     #pass through the race name, attributes, and half elf choice list
@@ -151,7 +152,9 @@ class Attributes:
 """
 #
 #Read in CSV data and populate Race class
-with open('DnDRaces.csv') as csvDataFile:
+dirpath = os.path.realpath(__file__)
+dirpath = dirpath.replace('\DnD Character Tools.py', '')
+with open(dirpath + '\DnDRaces.csv') as csvDataFile:
     csvReader = csv.reader(csvDataFile)
 
     races = []
