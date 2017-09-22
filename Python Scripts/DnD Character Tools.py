@@ -13,6 +13,7 @@ class Race:
         self.wMod = w
         self.chMod = ch
         self.helf = helf
+        self.attributes = {'str':s, 'dex':d, 'con':c, 'int':i, 'wis':w, 'cha':ch}
 
     def applyHelf(self):
         for i in self.helf:
@@ -46,6 +47,7 @@ class Character:
         self.wi = wi
         self.ch = ch
         self.raceClass = Race
+        self.attributes = {'str':s, 'dex':d, 'con':c, 'int':i, 'wis':w, 'cha':ch}
     
     def applyRaceModifiers(self):
         self.raceClass.applyHelf()
@@ -70,7 +72,7 @@ def whichAtt (instruct = 1):
     pass
 
 
-def attDistribute(method, race = "no", st = 8, de = 8, co = 8, int = 8, wi = 8, ch = 8):
+def attDistribute(method, myRace, st = 8, de = 8, co = 8, int = 8, wi = 8, ch = 8):
     print ("\n" * 100)
     
     #standard Score
@@ -79,6 +81,7 @@ def attDistribute(method, race = "no", st = 8, de = 8, co = 8, int = 8, wi = 8, 
         attList = [8,8,8,8,8,8]
         attOptions = ["str", "dex", "con", "int", "wis", "cha"]
         stdList = [15,14,13,12,10,8]
+        
         while (stop == 0):
             print ("\n" * 100)
             print ("Assign the standard set to your attributes (15,14,13,12,10,8)\n")        
@@ -120,7 +123,8 @@ def attDistribute(method, race = "no", st = 8, de = 8, co = 8, int = 8, wi = 8, 
                     
                     count += 1
 
-                return attList
+                attributes = {'str':attList[0], 'dex':attList[1], 'con':attList[2], 'int':attList[3], 'wis':attList[4], 'cha':attList[5]}
+                return attributes
 
             attList = inputScore()
             print ("\n"*100)
@@ -136,11 +140,175 @@ def attDistribute(method, race = "no", st = 8, de = 8, co = 8, int = 8, wi = 8, 
 
     #Point Buy
     def pointBuy():
-        pass
-    
+        
+        def printStat(attributes, budget):
+            idx = 0
+            print ('\nUse < or > to toggle increase or decrease\nEnter "done" when finished\n')
+            print ('Points Remaining to Distribute: ' + str(budget))
+            for att, val in attributes.items():
+                print (att.title() +': ' + str(val + myRace.attributes[att]))
+                idx += 1
+
+
+        mode = 'Increase'
+        budget = 27
+        restricted = True
+        attList = [8,8,8,8,8,8]
+        attOptions = ["str", "dex", "con", "int", "wis", "cha"]
+        attributes = {'str':8, 'dex':8, 'con':8, 'int':8, 'wis':8, 'cha':8}
+        for att, val in attributes.items():
+                print (att.title() +': ' + str(val))
+
+        keepGoing = True
+
+        while keepGoing:
+            print ('\n'*100)
+            
+            if restricted:
+                for att, val in attributes.items():
+                    if val < 8:
+                        attributes[att] = 8
+                        budget -= 1
+                    elif val > 15:
+                        attributes[att] = 15
+                        budget += 2
+            
+            printStat(attributes, budget)
+            sel = input (mode + ': ')         
+
+            if sel.lower() == 'reset':
+                for att, val in attributes.items():
+                    attributes[att] = 8        
+
+            if mode == 'Increase':
+                if (sel.upper() == 'STR' or sel == '1' or sel.upper() == 'STRENGTH' or sel.upper() == 'S') and budget > 0:
+                                      
+                    if attributes['str'] < 14 and restricted:
+                        budget -= 1
+                        attributes['str'] = attributes['str'] + 1
+                    elif attributes['str'] >= 14 and budget > 1:
+                        budget -= 2
+                        attributes['str'] = attributes['str'] + 1
+                
+                elif (sel.upper() == 'DEX' or sel == '2' or sel.upper() == 'DEXTERITY' or sel.upper() == 'D') and budget > 0:
+                                        
+                    if attributes['dex'] < 14 and restricted:
+                        budget -= 1
+                        attributes['dex'] = attributes['dex'] + 1
+                    elif attributes['dex'] >= 14 and budget > 1:
+                        budget -= 2
+                        attributes['dex'] = attributes['dex'] + 1
+                
+                elif (sel.upper() == 'CON' or sel == '3' or sel.upper() == 'CONSTITUTION' or sel.upper() == 'CO') and budget > 0:
+                                        
+                    if attributes['con'] < 14 and restricted:
+                        budget -= 1
+                        attributes['con'] = attributes['con'] + 1
+                    elif attributes['con'] >= 14 and budget > 1:
+                        budget -= 2
+                        attributes['con'] = attributes['con'] + 1
+                
+                elif (sel.upper() == 'INT' or sel == '4' or sel.upper() == 'INTELLIGENCE' or sel.upper() == 'I') and budget > 0:
+                                        
+                    if attributes['int'] < 14 and restricted:
+                        budget -= 1
+                        attributes['int'] = attributes['int'] + 1
+                    elif attributes['int'] >= 14 and budget > 1:
+                        budget -= 2
+                        attributes['int'] = attributes['int'] + 1
+
+                elif (sel.upper() == 'WIS' or sel == '5' or sel.upper() == 'WISDOM' or sel.upper() == 'W') and budget > 0:
+                                        
+                    if attributes['wis'] < 14 and restricted:
+                        budget -= 1
+                        attributes['wis'] = attributes['wis'] + 1
+                    elif attributes['wis'] >= 14 and budget > 1:
+                        budget -= 2
+                        attributes['wis'] = attributes['wis'] + 1
+
+                elif (sel.upper() == 'CHA' or sel == '6' or sel.upper() == 'CHARISMA' or sel.upper() == 'CH') and budget > 0:
+                                        
+                    if attributes['cha'] < 14 and restricted:
+                        budget -= 1
+                        attributes['cha'] = attributes['cha'] + 1
+                    elif attributes['cha'] >= 14 and budget > 1:
+                        budget -= 2
+                        attributes['cha'] = attributes['cha'] + 1
+
+                elif sel == 'done':
+                    keepGoing = False    
+
+                elif sel == '<' or sel.lower() == 'decrease':
+                    mode = 'Decrease'     
+
+
+            ####
+
+            elif mode == 'Decrease':
+                if (sel.upper() == 'STR' or sel == '1' or sel.upper() == 'STRENGTH' or sel.upper() == 'S'):
+                    attributes['str'] = attributes['str'] - 1
+                    
+                    if attributes['str'] < 14 and restricted:
+                        budget += 1
+                    elif attributes['str'] >= 14:
+                        budget += 2
+                
+                elif (sel.upper() == 'DEX' or sel == '2' or sel.upper() == 'DEXTERITY' or sel.upper() == 'D'):
+                    attributes['dex'] = attributes['dex'] - 1
+                    
+                    if attributes['dex'] < 14 and restricted:
+                        budget += 1
+                    elif attributes['dex'] >= 14:
+                        budget += 2
+                
+                elif (sel.upper() == 'CON' or sel == '3' or sel.upper() == 'CONSTITUTION' or sel.upper() == 'CO'):
+                    attributes['con'] = attributes['con'] - 1
+                    
+                    if attributes['con'] < 14 and restricted:
+                        budget += 1
+                    elif attributes['con'] >= 14:
+                        budget += 2
+                
+                elif (sel.upper() == 'INT' or sel == '4' or sel.upper() == 'INTELLIGENCE' or sel.upper() == 'I'):
+                    attributes['int'] = attributes['int'] - 1
+                    
+                    if attributes['int'] < 14 and restricted:
+                        budget += 1
+                    elif attributes['int'] >= 14:
+                        budget += 2
+
+                elif (sel.upper() == 'WIS' or sel == '5' or sel.upper() == 'WISDOM' or sel.upper() == 'W'):
+                    attributes['wis'] = attributes['wis'] - 1
+                    
+                    if attributes['wis'] < 14 and restricted:
+                        budget += 1
+                    elif attributes['wis'] >= 14:
+                        budget += 2
+
+                elif (sel.upper() == 'CHA' or sel == '6' or sel.upper() == 'CHARISMA' or sel.upper() == 'CH'):
+                    attributes['cha'] = attributes['cha'] - 1
+                    
+                    if attributes['cha'] < 14 and restricted:
+                        budget += 1
+                    elif attributes['cha'] >= 14:
+                        budget += 2
+
+                elif sel == 'done':
+                    keepGoing = False
+
+                elif sel == '>' or sel.lower() == 'increase':
+                    mode = 'Increase'  
+
+        ####
+
+        return attributes
     #check method
-    if method == 1:
-        attList = standardScore()
+    if method == '1':
+        attributes = standardScore()
+    elif method == '2':
+        attributes = pointBuy()
+    
+    return attributes
     #
 
 """
@@ -198,7 +366,8 @@ def menu ():
            "Available Modules:\n"
            "1. Character Creator\n"
            "2. Character Leveler\n"
-           "3. Spell Randomizer\n")
+           "3. Character Generator\n"
+           "4. Spell Randomizer\n")
     menuSelect = input("Select Module: ")
     
     if menuSelect == '1':
@@ -206,13 +375,10 @@ def menu ():
 
 
 
-
-
-def characterCreate ():
-    print ("\n"*100)  
+def selectRace ():
     print ("\n \n \nAvailable Races:")
 
-#eventually add in race descriptions
+    #eventually add in race descriptions
     x = 0
     for i in races:
         print (str(x+1) + ": " + str(races[x].name))
@@ -220,12 +386,19 @@ def characterCreate ():
 
     print ("\n")
 
-    raceSelect = races[int(input("Select your race: "))-1].name
+    raceSelect = races[int(input("Select your race: "))-1]
 
-#   classSelect
+    #   classSelect
     print ("\n"*100)  
-    print ("You chose: " + raceSelect)
+    print ("You chose: " + raceSelect.name)
+
+    return raceSelect
     #add number and string checker
+
+def characterCreate ():
+    print ("\n"*100)  
+    
+    selectedRace = selectRace()
 
     print ("\n\nAttribute Distributions:\n"
            "1. Standard Score\n"
@@ -237,10 +410,23 @@ def characterCreate ():
 
     distSelect = input('Select Distribution: ')
 
-    attDistribute(1)
+    selectedAttributes = attDistribute(distSelect, selectedRace)
+
+    ####
+    
+    #Chose Allignment
+    #Chose Sex
+    #Chose Height
+    #Choose Wight
+    #Chose Ideals
+    #Chose Bonds
+    #Flaws
+    #Choose Background and Skill Proficiencies
+    #Choose Name
+    #Choose Equipment
 
 
-    att = [8,8,8,8,8,8]
+
 #
 #
 
