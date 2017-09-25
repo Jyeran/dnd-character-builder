@@ -14,22 +14,29 @@ class Race:
         self.chMod = ch
         self.helf = helf
         self.attributes = {'str':s, 'dex':d, 'con':c, 'int':i, 'wis':w, 'cha':ch}
+        self.features = {}
 
     def applyHelf(self):
         for i in self.helf:
             
             if self.helf[i-1] == 1:
                 self.sMod += 1
+                self.attributes['str'] += 1
             elif self.helf[i-1] == 2:
                 self.dMod += 1
+                self.attributes['dex'] += 1
             elif self.helf[i-1] == 3:
                 self.cMod += 1
+                self.attributes['con'] += 1
             elif self.helf[i-1] == 4:
                 self.iMod += 1
+                self.attributes['int'] += 1
             elif self.helf[i-1] == 5:
                 self.wMod += 1
+                self.attributes['wis'] += 1
             elif self.helf[i-1] == 6:
                 self.chMod += 1
+                self.attributes['cha'] += 1
 
 
 class dndClass:
@@ -387,7 +394,46 @@ def selectRace ():
     print ("\n")
 
     raceSelect = races[int(input("Select your race: "))-1]
+    
+    def helfStat (stat):
+        if stat.lower() == 'str' or  stat.lower() == 'strength' or stat.lower() == '1' or stat.lower() == 's':
+            returnStat = 1
+        elif stat.lower() == 'dex' or  stat.lower() == 'dexterity' or stat.lower() == '2' or stat.lower() == 'd':
+            returnStat = 2
+        elif stat.lower() == 'con' or  stat.lower() == 'constitution' or stat.lower() == '3' or stat.lower() == 'co':
+            returnStat = 3
+        elif stat.lower() == 'int' or  stat.lower() == 'intelligence' or stat.lower() == '4' or stat.lower() == 'i':
+            returnStat = 4
+        elif stat.lower() == 'wis' or  stat.lower() == 'wisdom' or stat.lower() == '5' or stat.lower() == 'w':
+            returnStat = 5
+        elif stat.lower() == 'cha' or  stat.lower() == 'charisma' or stat.lower() == '6' or stat.lower() == 'ch':
+            returnStat = 6
+        else:
+            returnStat = -1
+        return returnStat
 
+    if raceSelect.name == "Half Elf":
+        print ('\nYou chose Half Elf.\n')
+        
+        go = True
+        while go:
+            statIn = input ('Select First Bonus Stat: ')
+            firstStat = helfStat(statIn)
+
+            if firstStat > 0:
+                go = False
+        
+        go = True
+        while go:
+            statIn = input ('Select Second Bonus Stat: ')
+            secondStat = helfStat(statIn)
+
+            if secondStat > 0:
+                go = False
+
+        raceSelect.helf = [firstStat, secondStat]
+    
+    raceSelect.applyHelf()
     #   classSelect
     print ("\n"*100)  
     print ("You chose: " + raceSelect.name)
@@ -397,6 +443,8 @@ def selectRace ():
 
 def characterCreate ():
     print ("\n"*100)  
+    
+    characterName = input ("What's your character's name? (enter random to generate)  " )
     
     selectedRace = selectRace()
 
@@ -412,12 +460,27 @@ def characterCreate ():
 
     selectedAttributes = attDistribute(distSelect, selectedRace)
 
+    detailCheck = True
+    while detailCheck:
+          
+        check = True
+        while check:
+            gender = input ("\nIs " + characterName + " Male, Female, or Non Binary?  ")
+            acceptableAnswers = {'m', 'f', 'male', 'female', 'boy', 'girl', 'non-binary', 'non binary', 'nb', 'man', 'woman', 'male to female', 'female to male', 'trans'}
+            if gender.lower() in acceptableAnswers:
+                check = False
+            else:
+                print ('Unrecognized Input, try again')
+
+        height = input ("\n How tall is " + characterName + "?  ")
+        weight = input ("\n How much does " + characterName + " weigh?  ")
+
     ####
     
     #Chose Allignment
     #Chose Sex
     #Chose Height
-    #Choose Wight
+    #Choose Weight
     #Chose Ideals
     #Chose Bonds
     #Flaws
